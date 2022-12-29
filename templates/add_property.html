@@ -1,0 +1,101 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Add Property
+{% endblock %}
+
+{% block main %}
+<h2>Add Property:</h2>
+    <form action="/properties/add" method="get">
+        <div class="mb-3">
+            <label for="prop">Copy Property:</label>
+            <select id="list" name="p">
+                <option name="p" value="0">Select</option>
+        {% for prop in props %}
+                <option name="p" value="{{prop[0]}}">{{prop[1]}}</option>
+        {% endfor %}
+            </select>
+        </div>
+    </form>
+    <form action="/api/properties/add" method="post">
+      <label for="basic-addon1" class="form-label"><i class="fa-solid fa-circle-info"></i> Details</label>
+  <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Name</span>
+      <input name="name" type="text" class="form-control" placeholder="Name" value aria-label="Property Name" aria-describedby="basic-addon1">
+      <span id="input-group-text" class="input-group-text" id="basic-addon1">Bedrooms</span>
+      <input name="beds" type="number" class="form-control" placeholder="BDs" aria-label="BDs" aria-describedby="basic-addon1">
+      <span class="input-group-text" id="basic-addon1">Baths</span>
+      <input name="baths" type="number" step=0.1 class="form-control" placeholder="Baths" aria-label="Baths" aria-describedby="basic-addon1">
+
+    </div>
+    <label for="basic-addon1" class="form-label"><i class="fa-solid fa-location-dot"></i> Location</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">Address</span>
+      <input name="address" type="text" class="form-control" placeholder="Address" aria-label="Address" aria-describedby="basic-addon1">
+      <span class="input-group-text" id="basic-addon1">City</span>
+      <input name="city" type="text" class="form-control" placeholder="City" aria-label="City" aria-describedby="basic-addon1">
+      <span class="input-group-text" id="basic-addon1">State</span>
+      <input name="state" type="text" class="form-control" placeholder="State" aria-label="State" aria-describedby="basic-addon1">
+      <span class="input-group-text" id="basic-addon1">Country</span>
+      <input name="country" type="country" class="form-control" placeholder="Country" aria-label="Country" aria-describedby="basic-addon1">
+
+    </div>
+    <label for="basic-addon1" class="form-label"><i class="fa-solid fa-key"></i> Codes</label>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">Lock Code</span>
+        <input name="lock_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+        <span class="input-group-text" id="basic-addon1">Gate Code</span>
+        <input name="gate_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+        <span class="input-group-text" id="basic-addon1">Emergency Code</span>
+        <input name="extra_code" type="text" class="form-control" placeholder="Alternative Code" aria-label="Alternative Code" aria-describedby="basic-addon1">
+
+      </div>
+      <label for="basic-addon1" class="form-label"><i class="fa-solid fa-wifi"></i> Wifi</label>
+      <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Wifi Name</span>
+          <input name="wifi_name" type="text" class="form-control" placeholder="name" aria-label="Property Name" aria-describedby="basic-addon1">
+          <span class="input-group-text" id="basic-addon1">Wifi Password</span>
+          <input name="wifi_password" type="text" class="form-control" placeholder="name" aria-label="BDs" aria-describedby="basic-addon1">
+
+        </div>
+        <label for="basic-addon1" class="form-label"><i class="fa-solid fa-calendar-days"></i> Calendars</label>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Airbnb iCal</span>
+            <input name="airbnb_ical" class="form-control" placeholder="iCal Link" aria-label="airbnb-ical" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">Booking.com iCal</span>
+            <input name="booking_ical" class="form-control" placeholder="iCal Link" aria-label="booking-ical" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">HomeAway iCal</span>
+            <input name="homeaway_ical" class="form-control" placeholder="iCal Link" aria-label="homeaway-ical" aria-describedby="basic-addon1">
+
+          </div>
+          <label for="basic-addon1" class="form-label"><i class="fa-solid fa-dollar-sign"></i> Prices</label>
+          <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Night Price:</span>
+              <span class="input-group-text">$</span>
+              <input name="night_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="Property Name" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">Cleaning Price:</span><span class="input-group-text">$</span>
+              <input name="clean_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="BDs" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">Extra Charges</span><span class="input-group-text">$</span>
+              <input name="extra_charges" type="number" step=0.01 class="form-control" placeholder="0" aria-label="Baths" aria-describedby="basic-addon1">
+
+            </div>
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-plus"></i> Add Property</button>
+            <button class="btn btn-warning" type="reset"><i class="fa-solid fa-eraser"></i> Reset Form</button>
+
+            </form>
+
+            <script>
+                let input = document.getElementById("list");
+                input.addEventListener('input', async function() {
+                  let response = await fetch('/properties/add?p=' + input.value);
+                  let details = await response.json();
+                  for (let detail in details[0]){
+                    x = document.getElementsByName(detail)[0];
+                    if (x != null){
+                        x.setAttribute("value", details[0][detail]);
+                    }
+                  }
+                })
+            </script>
+
+{% endblock %}

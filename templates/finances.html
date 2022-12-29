@@ -1,0 +1,94 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Finances
+{% endblock %}
+
+{% block main %}
+    <h1>Payments Info</h1>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Bill ID</th>
+                <th>Booking ID</th>
+                <th>Total Amount</th>
+                <th>Amount Paid</th>
+                <th>Amount Due</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Last Change</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for payment in payments %}
+            <tr>
+                <td>{{payment['id']}}</td>
+                <td>{{payment['booking_id']}}</td>
+                <td name="amount" value="{{payment['last_amount']}}">{{payment['last_amount'] | usd}}</td>
+                <td name="paid" value="{{payment['amount_paid']}}">{{payment['amount_paid'] | usd}}</td>
+                <td name="due" value="{{payment['due']}}">{{payment['due'] | usd}}</td>
+                <td>{{payment['method']}}</td>
+                {% if payment['active'] > 0 %}
+                    <td style="color: green;">Active</td>
+                {% else %}
+                    <td style="color: red;">Cancelled</td>
+                {% endif %}
+                <td>{{payment['payday']}}</td>
+                <td><a href="/bookings/edit?b={{payment['booking_id']}}" title="See Booking Details"><i class="fa-solid fa-calendar"></i></a></td>
+                <td><a href="/finances/payments?id={{payment['id']}}" title="Payments"><i class="fa-solid fa-file-invoice-dollar"></i></a></td>
+           </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-dark table-hover">
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="border-0 fw-bold text-end">Total Paid:</td>
+                <td id="total_paid"class="border-0 fw-bold text-start"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="border-0 fw-bold text-end">Total Due:</td>
+                <td id="total_due" class="border-0 fw-bold text-start"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="border-0 fw-bold text-end">TOTAL:</td>
+                <td id="total" class="border-0 fw-bold text-start"></td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+            var total = 0.0;
+            var total_due = 0.0;
+            var total_paid = 0.0;
+            let amount = document.getElementsByName("amount");
+            let due = document.getElementsByName("due");
+            let paid = document.getElementsByName("paid")
+            for(var i = 0; i < amount.length; i++){
+                total += parseFloat(amount[i].innerHTML.replace("$", "").replace(",", ""));
+                console.log(amount[i].innerHTML)
+            }
+            for(var i = 0; i < due.length; i++){
+                total_due += parseFloat(due[i].innerHTML.replace("$", "").replace(",", ""));
+                console.log(due[i].innerHTML)
+            }
+            for(var i = 0; i < paid.length; i++){
+                total_paid += parseFloat(paid[i].innerHTML.replace("$", "").replace(",", ""));
+                console.log(paid[i].innerHTML)
+            }
+            const toUsd = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            });
+            document.getElementById("total").innerHTML = toUsd.format(total);
+            document.getElementById("total_due").innerHTML = toUsd.format(total_due);
+            document.getElementById("total_paid").innerHTML = toUsd.format(total_paid);
+    </script>
+{% endblock %}

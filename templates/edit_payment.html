@@ -1,0 +1,106 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Edit Payment
+{% endblock %}
+
+{% block main %}
+    <h2>Edit Payment:</h2>
+    <form onsubmit="return confirm('Do you really want to save changes?');" action="../api/payments/edit" method="post">
+        <div class="mb-3">
+            <label for="listject">Payment:</label>
+            <select id="list" name="id">
+                <option name="id" value="0">Select</option>
+        {% for payment in payments %}
+                <option name="id" value="{{payment['id']}}">{{payment['id']}} ({{payment['first_name']}})</option>
+        {% endfor %}
+            </select>
+        </div>
+
+        <label for="basic-addon1" class="form-label"><i class="fa-solid fa-circle-info"></i> Guest Details</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1">First Name</span>
+      <input name="first_name" type="text" class="form-control" placeholder="First Name" aria-describedby="basic-addon1" readonly>
+      <span id="input-group-text" class="input-group-text" id="basic-addon1">Last Name</span>
+      <input name="last_name" type="text" class="form-control" placeholder="Last Name" aria-describedby="basic-addon1" readonly>
+      <span class="input-group-text" id="basic-addon1">Birth Date</span>
+      <input name="birth" type="date" class="form-control" placeholder="mm/dd/yyyy" aria-describedby="basic-addon1" readonly>
+
+    </div>
+    <label for="basic-addon1" class="form-label"><i class="fa-solid fa-location-dot"></i> Guest Contact Info</label>
+    <div class="input-group mb-3">
+      <span class="input-group-text" id="basic-addon1" required>Email</span>
+      <input name="email" type="email" class="form-control" placeholder="name@mail.com" aria-label="mail" aria-describedby="basic-addon1" readonly>
+      <span class="input-group-text" id="basic-addon1">Phone</span>
+      <input name="phone" type="tel" class="form-control" placeholder="+1 000-000-0000" aria-label="phone" aria-describedby="basic-addon1" readonly>
+    </div>
+
+          <label for="basic-addon1" class="form-label"><i class="fa-solid fa-dollar-sign"></i> Payment Info</label>
+          <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Total Amount:</span>
+              <span class="input-group-text">$</span>
+              <input id="last_amount" name="last_amount" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="money" aria-describedby="basic-addon1" readonly>
+              <span class="input-group-text" id="basic-addon1">Amount Paid:</span><span class="input-group-text">$</span>
+              <input id="amount_paid" name="amount_paid" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="money" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">Method:</span>
+              <input id="method" name="method" type="text" class="form-control" placeholder="Cash" aria-label="money" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">AMOUNT DUE:</span><span class="input-group-text">$</span>
+              <input id="due" name="due" type="number" step=0.01 class="form-control" value="0.00" aria-label="total" aria-describedby="basic-addon1" readonly>
+            </div>
+            <button class="btn btn-success" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+            </form>
+
+
+            <script>
+              async function getPayment(){
+                id = document.getElementById("list");
+                let response = await fetch('/api/payments/edit?id=' + id.value);
+                let details = await response.json();
+                for (let detail in details[0]){
+                  x = document.getElementsByName(detail)[0];
+                  if (x != null){
+                      if (details[0][detail] != null){
+                          x.removeAttribute("value");
+                          x.setAttribute("value", details[0][detail]);
+                      }
+                  }
+
+                }
+                getDue();
+              };
+
+              function getDue() {
+                let last_amount = document.getElementById("last_amount");
+                let amount_paid = document.getElementById("amount_paid");
+
+                var due = parseFloat(last_amount.value - amount_paid.value).toFixed(2);
+                console.log(due);
+                x = document.getElementById("due");
+                x.setAttribute("value", due);
+              };
+            </script>
+            <script>
+              const params = new URLSearchParams(window.location.search);
+              const name = params.get("id");
+              let list = document.getElementById("list");
+              console.log(name);
+              for (i = 0; i < list.options.length; i++)
+              {
+                if (list.options[i].value == name){
+                  list.options[i].selected = true;
+                  console.log("TRUE");
+                  getPayment();
+                  break;
+                }
+              }
+
+            </script>
+            <script>
+                let input = document.getElementById("list");
+                input.addEventListener('change', async function() { getPayment() });
+            </script>
+            <script>
+              document.getElementById("amount_paid").addEventListener('input', async function(){ getDue() });
+            </script>
+
+{% endblock %}

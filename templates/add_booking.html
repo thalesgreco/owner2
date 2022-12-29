@@ -1,0 +1,136 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Add Booking
+{% endblock %}
+
+{% block main %}
+    <h2>Add Booking:</h2>
+        <div class="mb-3">
+            <label for="booking">Select Propery:</label>
+            <select id="list" name="p">
+                <option name="p" value="0">Select</option>
+        {% for prop in props %}
+                <option name="p" value="{{prop[0]}}">{{prop[1]}}</option>
+        {% endfor %}
+            </select>
+        </div>
+        <form id="formAdd"action="../api/bookings/add" method="post" style="display:none;">
+          <input name="id" type="hidden">
+        <label for="basic-addon1" class="form-label"><i class="fa-solid fa-circle-info"></i> Guest Details</label>
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1">First Name</span>
+        <input name="first_name" type="text" class="form-control" placeholder="First Name" value aria-label="Property Name" aria-describedby="basic-addon1" required>
+        <span id="input-group-text" class="input-group-text" id="basic-addon1">Last Name</span>
+        <input name="last_name" type="text" class="form-control" placeholder="Last Name" aria-label="BDs" aria-describedby="basic-addon1" required>
+        <span class="input-group-text" id="basic-addon1">Birth Date</span>
+        <input name="birth" type="date" class="form-control" placeholder="mm/dd/yyyy" aria-label="birth" aria-describedby="basic-addon1" required>
+
+      </div>
+      <label for="basic-addon1" class="form-label"><i class="fa-solid fa-location-dot"></i> Guest Contact Info</label>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="basic-addon1" required>Email</span>
+        <input name="email" type="email" class="form-control" placeholder="name@mail.com" aria-label="mail" aria-describedby="basic-addon1" required>
+        <span class="input-group-text" id="basic-addon1">Phone</span>
+        <input name="phone" type="tel" class="form-control" placeholder="+1 000-000-0000" aria-label="phone" aria-describedby="basic-addon1" required>
+        <input name="vip" type="hidden" value="1">
+      </div>
+      <label for="basic-addon1" class="form-label"><i class="fa-solid fa-key"></i> Codes</label>
+      <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Lock Code</span>
+          <input name="lock_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+          <span class="input-group-text" id="basic-addon1">Gate Code</span>
+          <input name="gate_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+
+        </div>
+
+          <label for="basic-addon1" class="form-label"><i class="fa-solid fa-calendar-days"></i> Check In/Out</label>
+          <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Check-In</span>
+              <input id="checkin" name="checkin" type="date" class="form-control" placeholder="mm/dd/yyyy" aria-label="checkin" aria-describedby="basic-addon1" required>
+              <span class="input-group-text" id="basic-addon1">Check-out</span>
+              <input id="checkout" name="checkout" type="date" class="form-control" placeholder="mm/dd/yyyy" aria-label="checkin" aria-describedby="basic-addon1" required>
+              <span class="input-group-text" id="basic-addon1">Nights:</span>
+              <input id="nights" name="nights" type="number" class="form-control" placeholder="0" value="0" aria-label="total" aria-describedby="basic-addon1" readonly>
+            </div>
+            <label for="basic-addon1" class="form-label"><i class="fa-solid fa-dollar-sign"></i> Prices</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Night Price:</span>
+                <span class="input-group-text">$</span>
+                <input id="night_price" name="night_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label=" money" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Cleaning Price:</span><span class="input-group-text">$</span>
+                <input id="clean_price" name="clean_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="money" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Extra Charges:</span><span class="input-group-text">$</span>
+                <input id="extra_charges" name="extra_charges" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="money" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">TOTAL:</span><span class="input-group-text">$</span>
+                <input id="price" name="price" type="number" step=0.01 class="form-control" value="0.00" aria-label="total" aria-describedby="basic-addon1" readonly>
+              </div>
+              <button class="btn btn-success" type="submit">Add</button>
+              <button class="btn btn-warning" type="reset">Reset</button>
+              </form>
+              <ul id="json"></ul>
+
+
+            <script>
+                let input = document.getElementById("list");
+                input.addEventListener('input', async function() {
+                  if (parseInt(input.value) == 0) {
+                    document.getElementById('formAdd').style.display = 'none';
+                  }
+                  else {
+                    document.getElementById('formAdd').style.display = 'block';
+                    let response = await fetch('/api/properties/edit?p=' + input.value);
+                    let details = await response.json();
+                    details[0]['p'] = details[0]['id']
+                    let html = '';
+                    for (let detail in details[0]) {
+                      x = document.getElementsByName(detail)[0];
+                      if (x != null){
+                          if (details[0][detail] != null) {
+                              x.setAttribute("value", details[0][detail]);
+                          }
+                      }
+                      html+= '<li>'+ detail + ": " + details[0][detail] + "</li>";
+                  }
+                }
+              })
+
+            </script>
+            <script>
+              function getDays() {
+                let checkout = document.getElementById("checkout");
+                let night_price = document.getElementById("night_price");
+                let clean_price = document.getElementById("clean_price");
+                let extra_charges = document.getElementById("extra_charges");
+
+                var date1 = new Date(document.getElementById("checkin").value);
+                var date2 = new Date(checkout.value);
+                var difference = date2.getTime() - date1.getTime();
+                var days = difference / (1000 * 3600 * 24);
+                console.log(days);
+                if (days < 0){
+                  days = 0;
+                }
+                x = document.getElementById("nights");
+                x.setAttribute("value", days);
+                var night = parseFloat(night_price.value);
+                console.log(night);
+                var clean = parseFloat(clean_price.value);
+                console.log(clean);
+                var extra = parseFloat(extra_charges.value);
+                var subtotal = parseFloat((night * days) + clean + extra).toFixed(2);
+                console.log(subtotal);
+                y = document.getElementById("price");
+                y.setAttribute("value", subtotal);
+              };
+            </script>
+            <script>
+              document.getElementById("checkin").addEventListener('change', async function(){ getDays() });
+              document.getElementById("checkout").addEventListener('change', async function(){ getDays() });
+              document.getElementById("night_price").addEventListener('input', async function(){ getDays() });
+              document.getElementById("clean_price").addEventListener('input', async function(){ getDays() });
+              document.getElementById("extra_charges").addEventListener('input', async function(){ getDays() });
+
+            </script>
+
+{% endblock %}

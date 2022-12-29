@@ -1,0 +1,53 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Properties
+{% endblock %}
+
+{% block main %}
+    <h1>Properties Info</h1>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>BDs</th>
+                <th>Baths</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Country</th>
+                <th>Lock Code</th>
+                <th>Gate Code</th>
+                <th>Night Price</th>
+                <th>Clean Price</th>
+                <th>Status</th>
+                <th>Tools</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for property in properties %}
+            <tr>
+                <td>{{property['id']}}</td>
+                <td>{{property['name']}}</td>
+                <td>{{property['beds']}}</td>
+                <td>{{property['baths']}}</td>
+                <td>{{property['address']}}</td>
+                <td>{{property['city']}}</td>
+                <td>{{property['state']}}</td>
+                <td>{{property['country']}}</td>
+                <td>{{property['lock_code']}}</td>
+                <td>{{property['gate_code']}}</td>
+                <td>{{property['night_price'] | usd}}</td>
+                <td>{{property['clean_price'] | usd}}</td>
+                {% if property['visible'] > 0 %}
+                    <td style="color: green">Visible</td>
+                {% else %}
+                    <td style="color: red">Hidden</td>
+                {% endif %}
+                <td><a style="color: blue" href="/properties/edit?p={{property['id']}}">Edit</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Edit Properties
+{% endblock %}
+
+{% block main %}
+    <h2>Edit Properties:</h2>
+         <div class="mb-3">
+            <label for="prop">Property:</label>
+            <select id="list" name="p">
+                <option name="p" value="0">Select</option>
+        {% for prop in props %}
+                <option name="p" value="{{prop[0]}}">{{prop[1]}}</option>
+        {% endfor %}
+            </select>
+        </div>
+        <form id="formUpdate" onsubmit="return confirm('Do you really want to save changes?');" action="../api/properties/edit" method="post" style="display: none;">
+        <input name="id" type="hidden">
+        <label for="basic-addon1" class="form-label"><i class="fa-solid fa-circle-info"></i> Details</label>
+        <div class="input-group d-flex">
+            <label class="input-group-text" id="basic-addon1">Name</label>
+            <input name="name" type="text" class="form-control" placeholder="Name" value aria-label="Property Name" aria-describedby="basic-addon1">
+            <label id="input-group-text" class="input-group-text" id="basic-addon1">Bedrooms</label>
+            <input name="beds" type="number" class="form-control" placeholder="BDs" aria-label="BDs" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">Baths</span>
+            <input name="baths" type="number" step=0.1 class="form-control" placeholder="Baths" aria-label="Baths" aria-describedby="basic-addon1">
+
+          </div>
+          <label for="basic-addon1" class="form-label"><i class="fa-solid fa-location-dot"></i> Location</label>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Address</span>
+            <input name="address" type="text" class="form-control" placeholder="Address" aria-label="Address" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">City</span>
+            <input name="city" type="text" class="form-control" placeholder="City" aria-label="City" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">State</span>
+            <input name="state" type="text" class="form-control" placeholder="State" aria-label="State" aria-describedby="basic-addon1">
+            <span class="input-group-text" id="basic-addon1">Country</span>
+            <input name="country" type="country" class="form-control" placeholder="Country" aria-label="Country" aria-describedby="basic-addon1">
+
+          </div>
+          <label for="basic-addon1" class="form-label"><i class="fa-solid fa-key"></i> Codes</label>
+          <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Lock Code</span>
+              <input name="lock_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">Gate Code</span>
+              <input name="gate_code" type="text" class="form-control" placeholder="Code" aria-label="Code" aria-describedby="basic-addon1">
+              <span class="input-group-text" id="basic-addon1">Emergency Code</span>
+              <input name="extra_code" type="text" class="form-control" placeholder="Alternative Code" aria-label="Alternative Code" aria-describedby="basic-addon1">
+
+            </div>
+            <label for="basic-addon1" class="form-label"><i class="fa-solid fa-wifi"></i> Wifi</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Wifi Name</span>
+                <input name="wifi_name" type="text" class="form-control" placeholder="name" aria-label="Property Name" aria-describedby="basic-addon1">
+                <span class="input-group-text" id="basic-addon1">Wifi Password</span>
+                <input name="wifi_password" type="wifi_password" class="form-control" placeholder="name" aria-label="BDs" aria-describedby="basic-addon1">
+
+              </div>
+              <label for="basic-addon1" class="form-label"><i class="fa-solid fa-calendar-days"></i> Calendars</label>
+              <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">Airbnb iCal</span>
+                  <input name="airbnb_ical" class="form-control" placeholder="iCal Link" aria-label="airbnb-ical" aria-describedby="basic-addon1">
+                  <span class="input-group-text" id="basic-addon1">Booking.com iCal</span>
+                  <input name="booking_ical" class="form-control" placeholder="iCal Link" aria-label="booking-ical" aria-describedby="basic-addon1">
+                  <span class="input-group-text" id="basic-addon1">HomeAway iCal</span>
+                  <input name="homeaway_ical" class="form-control" placeholder="iCal Link" aria-label="homeaway-ical" aria-describedby="basic-addon1">
+
+                </div>
+                <label for="basic-addon1" class="form-label"><i class="fa-solid fa-dollar-sign"></i> Prices</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Night Price:</span>
+                    <span class="input-group-text">$</span>
+                    <input name="night_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="Property Name" aria-describedby="basic-addon1">
+                    <span class="input-group-text" id="basic-addon1">Cleaning Price:</span><span class="input-group-text">$</span>
+                    <input name="clean_price" type="number" step=0.01 class="form-control" placeholder="0.00" aria-label="BDs" aria-describedby="basic-addon1">
+                    <span class="input-group-text" id="basic-addon1">Extra Charges:</span><span class="input-group-text">$</span>
+                    <input name="extra_charges" type="number" step=0.01 class="form-control" placeholder="0" aria-label="Extra" aria-describedby="basic-addon1">
+
+                  </div>
+                  <button class="btn btn-success" type="submit"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+              </form>
+              <form id="formDelete" onsubmit="return confirm('DO YOU REALLY WANT TO DELETE THIS PROPERTY AND THE BOOKINGS ASSOCIATED WITH THAT?');" action="../api/properties/edit" method="get" style="display: none;">
+                <input name="delete" type="hidden" >
+
+                <button class="btn btn-danger" type="submit"><i class="fa-solid fa-trash"></i> Delete Property</button>
+              </form>
+
+
+            <script>
+                async function getProperty() {
+                  id = document.getElementById("list");
+                  if (parseInt(id.value) == 0) {
+                    document.getElementById('formUpdate').style.display = 'none';
+                    document.getElementById('formDelete').style.display = 'none';
+                  }
+                  else {
+                    document.getElementById('formUpdate').style.display = 'block';
+                    document.getElementById('formDelete').style.display = 'block';
+                  }
+                  let response = await fetch('/api/properties/edit?p=' + id.value);
+                  let details = await response.json();
+                  for (let detail in details[0]){
+                    x = document.getElementsByName(detail)[0];
+                    if (x != null){
+                        if (details[0][detail] != null){
+                            x.removeAttribute("value");
+                            x.setAttribute("value", details[0][detail]);
+                        }
+                    }
+                  }
+                  x = document.getElementsByName('delete')[0];
+                  x.removeAttribute("value");
+                  x.setAttribute("value", id.value);
+                };
+            </script>
+            <script>
+              const params = new URLSearchParams(window.location.search);
+              const name = params.get("p");
+              let list = document.getElementById("list");
+              console.log(name);
+              for (i = 0; i < list.options.length; i++)
+              {
+                if (list.options[i].value == name){
+                  list.options[i].selected = true;
+                  console.log("TRUE");
+                  getProperty();
+                  break;
+                }
+              }
+
+            </script>
+            <script>
+              let input = document.getElementById("list");
+              input.addEventListener('change', async function() { getProperty() });
+          </script>
+{% endblock %}

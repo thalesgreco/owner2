@@ -1,0 +1,52 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Bookings
+{% endblock %}
+
+{% block main %}
+    <h1>Bookings Info</h1>
+    <table class="table table-light table-hover">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Property</th>
+                <th>Guest</th>
+                <th>Lock Code</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Price</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Agent</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for booking in bookings %}
+            <tr>
+                <td>{{booking['id']}}</td>
+                <td>{{booking['name']}}</td>
+                <td>{{booking['first_name']}}</td>
+                <td>{{booking['lock_code']}}</td>
+                <td>{{booking['checkin']}}</td>
+                <td>{{booking['checkout']}}</td>
+                <td>{{booking['price'] | usd}}</td>
+                {% if booking['paid'] > 0 %}
+                    <td style="color: green;">Paid</td>
+                {% else %}
+                    <td style="color: red;">Due</td>
+                {% endif %}
+                {% if booking['active'] > 0 %}
+                    <td style="color: green;">Active</td>
+                {% else %}
+                    <td style="color: red;">Cancelled</td>
+                {% endif %}
+                <td>{{booking['user_name']}}</td>
+                <td><a href="/bookings/edit?b={{booking['id']}}" title="Edit Booking"><i class="fa-solid fa-square-pen"></i></a></td>
+                <td><a href="/finances/payments?id={{booking['payment_id']}}" title="Payments"><i class="fa-solid fa-file-invoice-dollar"></i></a></td>
+                <td><a href="/properties/edit?p={{booking['property_id']}}" title="Property Details"><i class="fa-solid fa-house"></i></a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

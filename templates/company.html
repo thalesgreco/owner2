@@ -1,0 +1,92 @@
+{% extends "layout2.html" %}
+
+{% block title %}
+    Change Password
+{% endblock %}
+
+{% block main %}
+<div id="alert" class="alert d-none" role="alert">
+  Success!
+</div>
+<h1 class="text-center">Company Details</h1><br>
+<form id="updateForm">
+    <input type="hidden" id="id" name="id" value="{{company['id']}}">
+    <label for="name">Company Name:</label><br>
+    <input type="text" id="name" name="name" value="{{company['name']}}" required><br>
+    <br>
+    <label for="address">Address:</label><br>
+    <input type="text" id="address" name="address" value="{{company['address']}}" required><br>
+    <br>
+    <label for="address">City:</label><br>
+    <input type="text" id="city" name="city" value="{{company['city']}}" required><br>
+    <br>
+    <label for="address">State:</label><br>
+    <input type="text" id="state" name="state" value="{{company['state']}}" required><br>
+    <br>
+    <label for="address">Country:</label><br>
+    <input type="text" id="country" name="country" value="{{company['country']}}" required><br>
+    <br>
+    <label for="address">Email:</label><br>
+    <input type="email" id="email" name="email" value="{{company['email']}}" required><br>
+    <br>
+    <label for="address">Phone Number:</label><br>
+    <input type="phone" id="phone" name="phone" value="{{company['phone']}}" required><br>
+    <br>
+    <label for="address">Website:</label><br>
+    <input type="text" id="site" name="site" value="{{company['site']}}"><br>
+    <br>
+    <input type="submit" value="Submit">
+  </form>
+
+  <script>
+  const form = document.getElementById('updateForm');
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const address = document.getElementById('address').value;
+      const city = document.getElementById('city').value;
+      const state = document.getElementById('state').value;
+      const country = document.getElementById('country').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const site = document.getElementById('site').value;
+      const id = document.getElementById('id').value;
+      const data = {
+        'id': id,
+        'name': name,
+        'address': address,
+        'city': city,
+        'state': state,
+        'country': country,
+        'email': email,
+        'phone': phone,
+        'site': site
+
+      };
+      fetch('/api/company/edit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status);
+        if (data.status == "success") {
+            // Show the alert and set its class to "alert-success"
+            document.getElementById("alert").classList.remove("d-none");
+            document.getElementById("alert").classList.add("alert-success");
+            document.getElementById("alert").innerHTML = "Company Details Changed!";
+        } else {
+            // Show the alert and set its class to "alert-danger"
+            document.getElementById("alert").classList.remove("d-none");
+            document.getElementById("alert").classList.add("alert-danger");
+            document.getElementById("alert").innerHTML = "There was an error changing company details! Contact Support!";
+        }
+        window.scrollTo(0, 0);
+      });
+    });
+    </script>
+{% endblock %}
